@@ -1,6 +1,6 @@
 
+import { ts } from "ts-json-schema-generator";
 import * as TJS from "typescript-json-schema";
-import ts from "typescript"
 
 function getProgramForText(text: string) {
   const dummyFilePath = "/Dummy.ts";
@@ -47,7 +47,10 @@ function text2JsonSchema(text: string) {
     generator.getSymbols().forEach(value => {
       result.push(generator.getSchemaForSymbol(value.name));
     });
+  } else {
+    console.error("buildGenerator fail");
   }
+  
   return result;
 }
 
@@ -56,9 +59,10 @@ const outputText = document.getElementById("outputText") as HTMLTextAreaElement
 
 inputText.oninput = (event) => {
   const result = text2JsonSchema(inputText.value + "");
-  outputText.textContent = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
+  console.log(result);
+  outputText.value = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
 };
 
 inputText.textContent = "type Person = {\n  name:string,\n  age:number\n}";
 const result = text2JsonSchema(inputText.value + "");
-outputText.textContent = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
+outputText.value = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
