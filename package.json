@@ -8,7 +8,8 @@
     "deploy": "gh-pages -d dist -o public"
   },
   "dependencies": {
-    "ts-json-schema-generator": "^1.1.2"
+    "ts-json-schema-generator": "^1.1.2",
+    "typescript-json-schema": "^0.55.0"
   },
   "devDependencies": {
     "assert": "^2.0.0",
