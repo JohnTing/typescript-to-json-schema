@@ -1,23 +1,10 @@
-import { resolve } from "path";
-import { ts } from "ts-json-schema-generator";
 
+import { ts } from "ts-json-schema-generator";
 import * as TJS from "typescript-json-schema";
 
-// optionally pass argument to schema generator
-const settings: TJS.PartialArgs = {
-  required: true,
-};
-
-// optionally pass ts compiler options
-const compilerOptions: TJS.CompilerOptions = {
-  strictNullChecks: true,
-};
-
-
 function getProgramForText(text: string) {
-  const dummyFilePath = "/file.ts";
+  const dummyFilePath = "/Dummy.ts";
   const textAst = ts.createSourceFile(dummyFilePath, text, ts.ScriptTarget.Latest);
-
 
   const options: ts.CompilerOptions = {
     target:ts.ScriptTarget.ES2016, 
@@ -45,30 +32,38 @@ function getProgramForText(text: string) {
   return program;
 }
 
-const program = getProgramForText("type Atype = {name:string}");
+function text2JsonSchema(text: string) {
+  const program = getProgramForText(text);
+  const settings: TJS.PartialArgs = {
+    required: true,
+    ignoreErrors:true
+  };
 
-// We can either get the schema for one file and one type...
-const schema = TJS.generateSchema(program, "Atype", settings);
-console.log(schema);
-// ... or a generator that lets us incrementally get more schemas
-/*
-const generator = TJS.buildGenerator(program, settings);
-if (generator) {
-  // generator can be also reused to speed up generating the schema if usecase allows:
-  const schemaWithReusedGenerator = TJS.generateSchema(program, "MyType", settings, [], generator);
+  // We can either get the schema for one file and one type...
 
-  
-  // all symbols
-  const symbols = generator.getUserSymbols();
-
-  // Get symbols for different types from generator.
-  generator.getSchemaForSymbol("MyType");
-  generator.getSchemaForSymbol("AnotherType");
-
-  
-
-  console.log(generator.getSchemaForSymbol("a").$schema);
-} else {
-  console.log("no generator");
+  const generator = TJS.buildGenerator(program, settings);
+  let result = [] as TJS.Definition[];
+  if(generator) {
+    generator.getSymbols().forEach(value => {
+      result.push(generator.getSchemaForSymbol(value.name));
+    });
+  }
+  return result;
 }
-*/
+
+type Person = {
+  name:string, 
+  age:number
+}
+
+const inputText = document.getElementById("inputText") as HTMLTextAreaElement
+const outputText = document.getElementById("outputText") as HTMLTextAreaElement
+
+inputText.oninput = (event) => {
+  const result = text2JsonSchema(inputText.value + "");
+  console.log(result);
+
+  outputText.textContent = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
+};
+
+
