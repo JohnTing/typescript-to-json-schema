@@ -1,6 +1,6 @@
 
-import { ts } from "ts-json-schema-generator";
 import * as TJS from "typescript-json-schema";
+import ts from "typescript"
 
 function getProgramForText(text: string) {
   const dummyFilePath = "/Dummy.ts";

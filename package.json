@@ -1,14 +1,17 @@
 {
   "scripts": {
+    "prestart": "rimraf dist/*",
     "start": "parcel src/index.html ",
     "server": "parcel src/index.html --https",
     "prebuild": "rimraf dist/*",
     "build": "parcel build src/index.html --public-url ./ --no-content-hash",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist -o public"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "ts-json-schema-generator": "^1.1.2",
+    "gh-pages": "^4.0.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.9.4",
     "typescript-json-schema": "^0.55.0"
   },
   "devDependencies": {
