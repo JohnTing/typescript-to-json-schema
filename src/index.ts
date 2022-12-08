@@ -51,19 +51,14 @@ function text2JsonSchema(text: string) {
   return result;
 }
 
-type Person = {
-  name:string, 
-  age:number
-}
-
 const inputText = document.getElementById("inputText") as HTMLTextAreaElement
 const outputText = document.getElementById("outputText") as HTMLTextAreaElement
 
 inputText.oninput = (event) => {
   const result = text2JsonSchema(inputText.value + "");
-  console.log(result);
-
   outputText.textContent = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
 };
 
-
+inputText.textContent = "type Person = {\n  name:string,\n  age:number\n}";
+const result = text2JsonSchema(inputText.value + "");
+outputText.textContent = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
