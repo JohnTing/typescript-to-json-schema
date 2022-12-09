@@ -1,5 +1,4 @@
-
-import { ts } from "ts-json-schema-generator";
+import * as ts from "typescript-json-schema/node_modules/typescript";
 import * as TJS from "typescript-json-schema";
 
 function getProgramForText(text: string) {
@@ -21,7 +20,7 @@ function getProgramForText(text: string) {
     getSourceFile: filePath => filePath === dummyFilePath ? textAst : undefined,
     readFile: filePath => filePath === dummyFilePath ? text : undefined,
     useCaseSensitiveFileNames: () => true,
-    writeFile: () => { }
+    writeFile: () => { }, 
   };
   const program = ts.createProgram({
     options,
