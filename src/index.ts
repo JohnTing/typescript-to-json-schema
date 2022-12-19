@@ -1,6 +1,29 @@
 import * as ts from "typescript-json-schema/node_modules/typescript";
 import * as TJS from "typescript-json-schema";
 
+
+import {EditorView, basicSetup} from "codemirror"
+import {javascript, typescriptLanguage} from "@codemirror/lang-javascript"
+
+const editorUpdate = EditorView.updateListener.of(function(e) {
+  if(e.docChanged) {
+    onchange(e.state.doc.toJSON().join("\n"));
+  }
+});
+
+let editor = new EditorView({
+  doc:"\n\n\n\n\n\n\n\n\n\n\n\n",
+  extensions: [basicSetup, javascript({typescript:true}), editorUpdate],
+  parent: document.getElementById("inputBox") as HTMLElement, 
+})
+
+
+let outputEditor = new EditorView({
+  extensions: [basicSetup, javascript({typescript:true})],
+  parent: document.getElementById("outputBox") as HTMLElement, 
+  
+})
+
 function getProgramForText(text: string) {
   const dummyFilePath = "/Dummy.ts";
   const textAst = ts.createSourceFile(dummyFilePath, text, ts.ScriptTarget.Latest);
@@ -47,21 +70,21 @@ function text2JsonSchema(text: string) {
       result.push(generator.getSchemaForSymbol(value.name));
     });
   } else {
+    alert("buildGenerator fail");
     console.error("buildGenerator fail");
   }
   
   return result;
 }
 
-const inputText = document.getElementById("inputText") as HTMLTextAreaElement
-const outputText = document.getElementById("outputText") as HTMLTextAreaElement
-
-inputText.oninput = (event) => {
-  const result = text2JsonSchema(inputText.value + "");
+function onchange(text: string) {
+  const result = text2JsonSchema(text + "");
   console.log(result);
-  outputText.value = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
-};
+  const newtext = result.map(v => JSON.stringify(v, null, "    ")).join("\n");
+  outputEditor.dispatch({changes: {from:0, to: outputEditor.state.doc.toString().length, insert: newtext}});
+}
 
-inputText.textContent = "type Person = {\n  name:string,\n  age:number\n}";
-const result = text2JsonSchema(inputText.value + "");
-outputText.value = result.map(v =>  JSON.stringify(v, null, "    ")).join("\n");
+editor.dispatch({
+  changes: {from: 0, insert: "type Person = {\n  name:string,\n  age:number\n}"}
+})
+
