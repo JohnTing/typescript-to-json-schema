@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "prestart": "rimraf dist/*",
+    "prestart": "rimraf dist/* && rimraf .parcel-cache/*",
     "start": "parcel src/index.html ",
     "server": "parcel src/index.html --https",
     "prebuild": "rimraf dist/*",

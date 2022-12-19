@@ -64,10 +64,13 @@ function text2JsonSchema(text: string) {
   // We can either get the schema for one file and one type...
 
   const generator = TJS.buildGenerator(program, settings);
-  let result = [] as TJS.Definition[];
+
+  let result = [] as  {name:string, def:TJS.Definition}[];
+
+
   if(generator) {
     generator.getSymbols().forEach(value => {
-      result.push(generator.getSchemaForSymbol(value.name));
+      result.push({name:value.name, def:generator.getSchemaForSymbol(value.name)});
     });
   } else {
     alert("buildGenerator fail");
@@ -80,7 +83,7 @@ function text2JsonSchema(text: string) {
 function onchange(text: string) {
   const result = text2JsonSchema(text + "");
   console.log(result);
-  const newtext = result.map(v => JSON.stringify(v, null, "    ")).join("\n");
+  const newtext = result.map(v => `let ${v.name}JsonSchema = ` + JSON.stringify(v.def, null, "    ")).join("\n");
   outputEditor.dispatch({changes: {from:0, to: outputEditor.state.doc.toString().length, insert: newtext}});
 }
 
