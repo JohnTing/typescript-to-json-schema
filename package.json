@@ -3,7 +3,7 @@
     "prestart": "rimraf dist/* && rimraf .parcel-cache/*",
     "start": "parcel src/index.html ",
     "server": "parcel src/index.html --https",
-    "prebuild": "rimraf dist/*",
+    "prebuild": "rimraf dist/* && rimraf .parcel-cache/*",
     "build": "parcel build src/index.html --public-url ./ --no-content-hash",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
