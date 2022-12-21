@@ -84,7 +84,7 @@ function text2JsonSchema(text: string) {
 function onchange(text: string) {
   const result = text2JsonSchema(text + "");
   console.log(result);
-  const newtext = result.map(v => `const ${v.name}_JsonSchema = ` + stringify(v.def, {})).join("\n");
+  const newtext = result.map(v => `const ${v.name}Schema = ` + stringify(v.def, {})).join("\n");
   outputEditor.dispatch({ changes: { from: 0, to: outputEditor.state.doc.toString().length, insert: newtext } });
 }
 
